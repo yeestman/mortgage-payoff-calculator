@@ -212,7 +212,7 @@ export default function App() {
       monthlyPayment,
       returnRates,
     });
-  }, [currentBalance, annualRate, termMonths, monthsElapsed, extraPerMonth, monthlyPayment]);
+  }, [currentBalance, annualRate, termMonths, monthsElapsed, extraPerMonth, monthlyPayment, rate1, rate2, rate3]);
 
   if (!data) {
     return (
