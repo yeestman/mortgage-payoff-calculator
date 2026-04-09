@@ -61,10 +61,10 @@ function NumberInput({ label, value, onChange, min = 0, max, step = 1, prefix = 
           min={min} max={max} step={step}
           value={value}
           onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-          className={`w-full bg-slate-800 border border-slate-600 rounded-lg py-2 text-sm text-slate-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${prefix ? 'pl-7 pr-3' : 'px-3'}`}
+          className={`w-full bg-slate-800 border border-slate-600 rounded-lg py-2 text-sm text-slate-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${prefix ? 'pl-7' : 'pl-3'} ${suffix ? 'pr-12' : 'pr-3'}`}
         />
         {suffix && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">{suffix}</span>
+          <span className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-500 text-sm pointer-events-none">{suffix}</span>
         )}
       </div>
     </div>
