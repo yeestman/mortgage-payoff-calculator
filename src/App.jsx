@@ -49,6 +49,12 @@ function SliderInput({ label, value, onChange, min, max, step, format, suffix = 
 }
 
 function NumberInput({ label, value, onChange, min = 0, max, step = 1, prefix = '', suffix = '' }) {
+  const [display, setDisplay] = useState(String(value));
+  const [focused, setFocused] = useState(false);
+
+  // Sync display with external value when not focused
+  const shownValue = focused ? display : String(value);
+
   return (
     <div className="space-y-1">
       <label className="text-sm text-slate-400">{label}</label>
@@ -59,8 +65,25 @@ function NumberInput({ label, value, onChange, min = 0, max, step = 1, prefix = 
         <input
           type="number"
           min={min} max={max} step={step}
-          value={value}
-          onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+          value={shownValue}
+          onFocus={() => { setFocused(true); setDisplay(String(value)); }}
+          onBlur={() => {
+            setFocused(false);
+            const parsed = parseFloat(display);
+            if (!isNaN(parsed) && parsed > 0) {
+              onChange(parsed);
+            } else {
+              setDisplay(String(value));
+            }
+          }}
+          onChange={(e) => {
+            const raw = e.target.value;
+            setDisplay(raw);
+            const parsed = parseFloat(raw);
+            if (!isNaN(parsed) && parsed > 0) {
+              onChange(parsed);
+            }
+          }}
           className={`w-full bg-slate-800 border border-slate-600 rounded-lg py-2 text-sm text-slate-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${prefix ? 'pl-7' : 'pl-3'} ${suffix ? 'pr-12' : 'pr-3'}`}
         />
         {suffix && (
@@ -68,6 +91,39 @@ function NumberInput({ label, value, onChange, min = 0, max, step = 1, prefix = 
         )}
       </div>
     </div>
+  );
+}
+
+function InlineRateInput({ value, onChange }) {
+  const [display, setDisplay] = useState(String(value));
+  const [focused, setFocused] = useState(false);
+  const shownValue = focused ? display : String(value);
+
+  return (
+    <input
+      type="number"
+      value={shownValue}
+      onFocus={() => { setFocused(true); setDisplay(String(value)); }}
+      onBlur={() => {
+        setFocused(false);
+        const parsed = parseFloat(display);
+        if (!isNaN(parsed) && parsed > 0) {
+          onChange(parsed);
+        } else {
+          setDisplay(String(value));
+        }
+      }}
+      onChange={(e) => {
+        const raw = e.target.value;
+        setDisplay(raw);
+        const parsed = parseFloat(raw);
+        if (!isNaN(parsed) && parsed > 0) {
+          onChange(parsed);
+        }
+      }}
+      min={0} max={30} step={0.5}
+      className="w-14 bg-slate-700 border border-slate-600 rounded px-1.5 py-0.5 text-sm font-semibold text-slate-200 text-center focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+    />
   );
 }
 
@@ -346,13 +402,7 @@ export default function App() {
               <div key={i} className="bg-slate-800/40 border border-slate-700 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      value={rateValues[i]}
-                      onChange={(e) => rateSetters[i](parseFloat(e.target.value) || 0)}
-                      min={0} max={30} step={0.5}
-                      className="w-14 bg-slate-700 border border-slate-600 rounded px-1.5 py-0.5 text-sm font-semibold text-slate-200 text-center focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                    />
+                    <InlineRateInput value={rateValues[i]} onChange={rateSetters[i]} />
                     <span className="text-sm text-slate-400">% Return</span>
                   </div>
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
