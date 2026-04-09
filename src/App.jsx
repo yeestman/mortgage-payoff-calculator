@@ -229,13 +229,13 @@ export default function App() {
     .filter((_, i) => i % step === 0 || i === timeline.length - 1)
     .map((d) => ({
       label: `Mo ${d.month}`,
-      'Early Payoff': d.netA,
-      'Invest First': d.netB,
+      'Early Payoff': d.investA,
+      'Invest First': d.investB,
     }));
 
   // Bar chart data
   const barData = data.results.map((r) => ({
-    name: `${(r.rate * 100).toFixed(0)}%`,
+    name: `${parseFloat((r.rate * 100).toFixed(2))}% Return`,
     'Early Payoff': Math.round(r.finalA),
     'Invest First': Math.round(r.finalB),
   }));
@@ -377,7 +377,7 @@ export default function App() {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={barData} barGap={8}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-            <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 12 }} />
+            <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 12 }} interval={0} />
             <YAxis tick={{ fill: '#64748b', fontSize: 11 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}K`} />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: 12, color: '#94a3b8' }} />
@@ -388,7 +388,7 @@ export default function App() {
       </Section>
 
       {/* Net Worth Timeline */}
-      <Section title="Net Worth Over Time">
+      <Section title="Investment Portfolio Growth Over Time">
         <TabBar tabs={returnLabels} active={activeRateTab} onChange={setActiveRateTab} />
         <ResponsiveContainer width="100%" height={400}>
           <AreaChart data={chartData}>
