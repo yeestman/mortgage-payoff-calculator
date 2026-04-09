@@ -189,8 +189,13 @@ export default function App() {
   const [activeRateTab, setActiveRateTab] = useState(1); // default 7%
   const [activeAmortTab, setActiveAmortTab] = useState(0);
 
-  const returnRates = [0.05, 0.07, 0.10];
-  const returnLabels = ['5% Return', '7% Return', '10% Return'];
+  // Editable return rates
+  const [rate1, setRate1] = useState(5);
+  const [rate2, setRate2] = useState(7);
+  const [rate3, setRate3] = useState(10);
+
+  const returnRates = [rate1 / 100, rate2 / 100, rate3 / 100];
+  const returnLabels = [`${rate1}% Return`, `${rate2}% Return`, `${rate3}% Return`];
 
   const extraPerMonth = extraPerDay * 365.25 / 12;
   const termMonths = termYears * 12;
@@ -335,10 +340,21 @@ export default function App() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {data.results.map((r, i) => {
             const diff = r.finalA - r.finalB;
+            const rateSetters = [setRate1, setRate2, setRate3];
+            const rateValues = [rate1, rate2, rate3];
             return (
               <div key={i} className="bg-slate-800/40 border border-slate-700 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-slate-300">{(r.rate * 100).toFixed(0)}% Return</span>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="number"
+                      value={rateValues[i]}
+                      onChange={(e) => rateSetters[i](parseFloat(e.target.value) || 0)}
+                      min={0} max={30} step={0.5}
+                      className="w-14 bg-slate-700 border border-slate-600 rounded px-1.5 py-0.5 text-sm font-semibold text-slate-200 text-center focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                    <span className="text-sm text-slate-400">% Return</span>
+                  </div>
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                     r.winner === 'A'
                       ? 'bg-amber-500/20 text-amber-400'
